@@ -8,13 +8,13 @@ data "aws_ssm_parameter" "linuxAmi" {
 }
 
 #Create and bootstrap EC2 in us-east-1
-resource "aws_instance" "ec2-vm" {
-  ami                         = data.aws_ssm_parameter.linuxAmi.value
-  instance_type               = "t3.micro"
-  associate_public_ip_address = true
-  vpc_security_group_ids      = [aws_security_group.sg.id]
-  subnet_id                   = aws_subnet.public_subnet.id
+resource "aws_subnet" "public_subnet" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = "us-east-1a"
+
   tags = {
-    Name = "${terraform.workspace}-ec2"
+    Name = "public-subnet"
   }
 }
